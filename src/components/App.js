@@ -62,34 +62,159 @@ const App = () => {
 
   //Exercice #1
 
-  return (
-    <div>
-      <Accordion data={faqs} />
-    </div>
-  );
-}
+  // return (
+  //   <div>
+  //     <Accordion data={faqs} />
+  //   </div>
+  // );
 
-function Accordion({data}) {
-  return <div className="accordion">
-    {data.map((el, idx) => <AccordionItem key={el.title} num={idx + 1} title={el.title} text={el.text}  />)}
-  </div>;
-}
+  //Challenge #1 Tip Calculator
 
-const AccordionItem = ({num, title, text}) => {
+  const [bill, setBill] = useState('')
+  const [percentage, setPercentage] = useState(0)
+  const [percentage2, setPercentage2] = useState(0)
 
-  const [isOpen, setIsOpen] = useState(false);
+  const tip = (bill * (percentage + percentage2) / 2 ) / 100
 
-  const handleToggle = () => {
-    setIsOpen((isOpen => !isOpen))
+  const handleReset = () => {
+    setBill('');
+    setPercentage(0);
+    setPercentage2(0);
   }
 
   return (
-    <div className={`item ${isOpen && "open"}`} onClick={handleToggle}>
-      <p className="number">{num < 10 ? `0${num}` : num}</p>
-      <p className="text">{title}</p>
-      <p className="icon">{isOpen ? "-" : "+"}</p>
-      {isOpen && <div className="content-box">{text}</div>}
+    <div>
+      <BillInput 
+        bill={bill}
+        onBill={setBill}
+      />
+      <Percentage
+        percentage={percentage}
+        onPercentage={setPercentage}
+      >
+        How did you like the service?
+      </Percentage>
+      <Percentage
+        percentage={percentage2}
+        onPercentage={setPercentage2}
+      >
+        How did your friend like the service?
+      </Percentage>
+      {bill > 0 && (
+        <>
+          <Output 
+            bill={bill}
+            tip={tip}
+          />
+          <Button
+            bill={bill}
+            onReset={handleReset}
+          >
+            Reset
+          </Button>
+        </>
+      )}
+      
     </div>
+  )
+}
+
+
+//Exercice #1
+// function Accordion({data}) {
+
+//   const [curOpen, setCurOpen] = useState(null)
+
+//   return <div className="accordion">
+//     {data.map((el, idx) => 
+//       <AccordionItem 
+//         curOpen={curOpen}
+//         onOpen={setCurOpen}
+//         key={el.title} 
+//         num={idx + 1} 
+//         title={el.title}  
+//       >{el.text}</AccordionItem>
+//     )}
+//     <AccordionItem 
+//       curOpen={curOpen}
+//       onOpen={setCurOpen}
+//       key={"test 1"} 
+//       num={30} 
+//       title={"Test 1"}  
+//     >
+//       <p>Hello the world</p>
+//     </AccordionItem>
+//   </div>;
+// }
+
+// const AccordionItem = ({num, title, curOpen, onOpen, children}) => {
+
+//   // const [isOpen, setIsOpen] = useState(false);
+
+//   const isOpen = num === curOpen;
+
+//   const handleToggle = () => {
+//     // setIsOpen((isOpen => !isOpen))
+//     onOpen(isOpen ? null : num)
+//   }
+
+//   return (
+//     <div className={`item ${isOpen && "open"}`} onClick={handleToggle}>
+//       <p className="number">{num < 10 ? `0${num}` : num}</p>
+//       <p className="text">{title}</p>
+//       <p className="icon">{isOpen ? "-" : "+"}</p>
+//       {isOpen && <div className="content-box">{children}</div>}
+//     </div>
+//   )
+// }
+
+//Exercice #1
+
+//Challenge #1 Tip Calculator
+
+const BillInput = ({bill, onBill}) => {
+
+  return (
+    <div>
+      <label>
+        How much was the bill?
+      </label>
+      <input 
+        type="text" 
+        value={bill} 
+        onChange={(e) => onBill(+e.target.value)}
+        placeholder="Bill"
+      />
+    </div>
+  )
+}
+
+const Percentage = ({percentage, onPercentage, children}) => {
+
+  return (
+    <div>
+      <label>{children}</label>
+      <select value={percentage} onChange={(e) => onPercentage(Number(e.target.value))}>
+        <option value="0">Dissatisfied (0%)</option>
+        <option value="5">It was okay (5%)</option>
+        <option value="10">It was good (10%)</option>
+        <option value="20">Absolutely amazing (20%)</option>
+      </select>
+    </div>
+  )
+}
+
+const Output = ({bill, tip}) => {
+
+  return <h3>You pay ${bill + tip} (${bill} + ${tip} tip)</h3>
+}
+
+const Button = ({bill, onReset, children}) => {
+
+  return (
+  <button onClick={onReset}>
+    {children}
+  </button>
   )
 }
 
